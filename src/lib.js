@@ -1,4 +1,4 @@
-import LocalServer from './Server.js'
+import LocalServer from './LocalServer.js'
 import monomeGrid from 'monome-grid'
 
 export async function run() {
