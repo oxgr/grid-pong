@@ -1,5 +1,6 @@
 import express from 'express'
 import { Server, Socket } from 'socket.io'
+import browserSync from 'browser-sync'
 import path from 'path'
 
 export default class LocalServer {
@@ -7,6 +8,8 @@ export default class LocalServer {
     app
     port
     server
+
+    bs
 
     io
     mainSocket
@@ -19,10 +22,31 @@ export default class LocalServer {
         console.log( `Server runnning on localhost:${3000}` )
 
         setupRoutes( this.app )
-        this.io = setupSocket( this.server )
+
+        this.bs = setupBrowserSync()
+
+        this.io = ( ( server ) => {
+
+            const io = new Server( server, {
+                cors: {
+                    origin: '*'
+                }
+            } )
+
+            io.on( 'connection', newConnection )
+
+            function newConnection( socket ) {
+
+                console.log( `New connection @ ${socket.id}` )
+                socket = LocalServer.initSocket( socket )
+
+            }
+
+            return io
+
+        } )( this.server )
 
         function setupRoutes( app ) {
-
             app.use( express.static( 'public' ) )
             app.use( '/node_modules', express.static( './node_modules' ) )
 
@@ -34,30 +58,48 @@ export default class LocalServer {
 
         function setupSocket( server ) {
 
-            const io = new Server( server )
 
-            io.on( 'connection', newConnection )
 
-            function newConnection( socket ) {
+        }
 
-                console.log( `New connection @ ${socket.id}` )
+        function setupBrowserSync() {
+            const bs = browserSync.create()
 
-                this.mainSocket = socket
+            bs.init( {
+                // watch: true,
+                files: [ 'public/*' ],
+                // server: 'public'
+                // server: {
+                //     baseDir: 'public'
+                // }
+                proxy: 'localhost:3000',
+                port: 4000,
+                open: false,
+            } )
 
-            }
-
-            return io
-
+            return bs
         }
 
     }
 
-    /**
-     * @param { Socket } socket
-     */
-    set mainSocket( socket ) {
+    static initSocket( socket ) {
 
-        this.mainSocket = this.mainSocket ?? socket
+        socket.on( 'led', ( led ) => {
+
+            console.log( led );
+
+        } )
+
+        return socket
+
+    }
+
+    initMainSocket() {
+        this.mainSocket.on( 'led', ( led ) => {
+
+            console.log( led );
+
+        } )
 
     }
 

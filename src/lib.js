@@ -16,9 +16,9 @@ export async function run() {
 
     // const grid = await monomeGrid()
 
-    // Temporary empty grid object for testing
+    // Temporary empty grid object for testing without hardware
     const grid = {
-        refresh: () => {},
+        refresh: ( led ) => { console.log( `[GRID]: refresh() called with led: ${led}`);},
         key: () => {}
     }
 

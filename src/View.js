@@ -26,7 +26,14 @@ export default class View {
      */
     update( led ) {
 
-        this.grid.refresh( led )
+        this.led = led
+        this.refresh()
+
+    }
+
+    refresh() {
+
+        this.grid.refresh( this.led )
 
     }
 
@@ -50,7 +57,6 @@ export default class View {
     set led( led ) {
 
         this.ledLast = this.led
-        this.led = led
 
     }
 
@@ -59,7 +65,7 @@ export default class View {
         const ms = 1000 / fps
 
         // call refresh() function 60 times per second
-        this.loop = setInterval( () => this.update( this.led ), ms );
+        this.loop = setInterval( () => this.refresh( this.led ), ms );
 
     }
 

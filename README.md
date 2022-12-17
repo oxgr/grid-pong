@@ -10,4 +10,3 @@ Pong on the monome grid. Uses the grid as the view and controller with p5.js run
 # Structure
 
 ## Backend / Kitchen
-- Model

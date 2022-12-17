@@ -1,7 +1,24 @@
 import 'p5'
-// import * as p5 from '/node_modules/p5/lib/p5.js'
-import { sketch } from './sketch.js'
+import { setup, draw, fn } from './sketch.js'
 
-// console.log( p5.Color )
+main()
 
-new p5( sketch, document.getElementById( 'canvas' ) )
+function main() {
+
+    // const MODE = 'instance'
+    const MODE = 'global'
+
+    switch ( MODE ) {
+
+        case 'instance':
+            new p5( fn, document.getElementById( 'canvas' ) )
+            break
+
+        case 'global':
+            window.setup = setup
+            window.draw = draw
+            break
+
+    }
+
+}
