@@ -20,65 +20,48 @@ export default class LocalServer {
         this.port = process.env.PORT || 3000
         this.server = this.app.listen( this.port )
         console.log( `Server runnning on localhost:${3000}` )
+        
+        LocalServer.setupRoutes( this.app )
 
-        setupRoutes( this.app )
+        this.bs = LocalServer.setupBrowserSync()
 
-        this.bs = setupBrowserSync()
+        this.io = LocalServer.setupSocket( this.server )
 
-        this.io = ( ( server ) => {
+    }
 
-            const io = new Server( server, {
-                cors: {
-                    origin: '*'
-                }
-            } )
+    static setupRoutes( app ) {
+        app.use( express.static( 'public' ) )
+        app.use( '/node_modules', express.static( './node_modules' ) )
 
-            io.on( 'connection', newConnection )
+        // app.get( '/', ( req, res ) => {
+        //     res.sendFile( path.resolve('./public/index.html') )
+        // })
 
-            function newConnection( socket ) {
+    }
 
-                console.log( `New connection @ ${socket.id}` )
-                socket = LocalServer.initSocket( socket )
+    static setupSocket( server ) {
 
+        const io = new Server( server, {
+            cors: {
+                origin: '*'
             }
+        } )
 
-            return io
+        io.on( 'connection', ( socket ) => {
 
-        } )( this.server )
+            console.log( `New connection @ ${socket.id}` )
 
-        function setupRoutes( app ) {
-            app.use( express.static( 'public' ) )
-            app.use( '/node_modules', express.static( './node_modules' ) )
+            socket.on( 'led', ( led ) => {
 
-            // app.get( '/', ( req, res ) => {
-            //     res.sendFile( path.resolve('./public/index.html') )
-            // })
-
-        }
-
-        function setupSocket( server ) {
-
-
-
-        }
-
-        function setupBrowserSync() {
-            const bs = browserSync.create()
-
-            bs.init( {
-                // watch: true,
-                files: [ 'public/*' ],
-                // server: 'public'
-                // server: {
-                //     baseDir: 'public'
-                // }
-                proxy: 'localhost:3000',
-                port: 4000,
-                open: false,
+                console.log( `[IO]: led - ${led}` );
+    
             } )
 
-            return bs
-        }
+            socket = LocalServer.initSocket( socket )
+
+        })
+
+        return io
 
     }
 
@@ -94,19 +77,24 @@ export default class LocalServer {
 
     }
 
-    initMainSocket() {
-        this.mainSocket.on( 'led', ( led ) => {
+    static setupBrowserSync() {
 
-            console.log( led );
+        const bs = browserSync.create()
 
+        bs.init( {
+            // watch: true,
+            files: [ 'public/*' ],
+            // server: 'public'
+            // server: {
+            //     baseDir: 'public'
+            // }
+            proxy: 'localhost:3000',
+            port: 4000,
+            open: false,
         } )
 
-    }
-
-    clearMainSocket() {
-
-        this.mainSocket = undefined;
-
+        return bs
+        
     }
 
 }
