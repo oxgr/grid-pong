@@ -1,8 +1,15 @@
 import express from 'express'
-import { Server } from 'socket.io'
+import { Server, Socket } from 'socket.io'
 import path from 'path'
 
 export default class LocalServer {
+
+    app
+    port
+    server
+
+    io
+    mainSocket
 
     constructor() {
 
@@ -12,7 +19,7 @@ export default class LocalServer {
         console.log( `Server runnning on localhost:${3000}` )
 
         setupRoutes( this.app )
-        setupSocket( this.server )
+        this.io = setupSocket( this.server )
 
         function setupRoutes( app ) {
 
@@ -35,9 +42,28 @@ export default class LocalServer {
 
                 console.log( `New connection @ ${socket.id}` )
 
+                this.mainSocket = socket
+
             }
 
+            return io
+
         }
+
+    }
+
+    /**
+     * @param { Socket } socket
+     */
+    set mainSocket( socket ) {
+
+        this.mainSocket = this.mainSocket ?? socket
+
+    }
+
+    clearMainSocket() {
+
+        this.mainSocket = undefined;
 
     }
 
