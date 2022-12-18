@@ -2,6 +2,7 @@
 /// <reference path="../node_modules/@types/p5/global.d.ts" />
 
 import * as Socket from 'socket.io'
+import {GridKey} from 'Controller'
 
 class Model {
     
@@ -27,13 +28,12 @@ export default class Sketch {
 
         // console.error( {model:this.model} )
 
+        setupSocketHandlers( socket )
 
-        // let led = [ [ 0, 1 ], [ 2, 3 ] ]
+        let led = [ [ 0, 1 ], [ 2, 3 ] ]
 
-        // socket.emit( 'led', led )
-        // socket.on( 'key', ( msg ) => {
-        //     console.log( msg )
-        // } )
+        socket.emit( 'led', led )
+        socket.emit( 'key', { x: 1, y: 2, s: 0 } )
 
         createCanvas( 400, 400 )
         background( 'pink' )
@@ -54,6 +54,57 @@ export default class Sketch {
 
         console.log( e.key )
 
+        switch (e.key) {
+
+            case 'w':
+                emitKey( 'TOP_LEFT', 1 )
+                break
+            
+            case 's':
+                emitKey( 'BTM_LEFT', 1 )
+                break
+            
+            case 'ArrowLeft':
+                emitKey( 'TOP_RIGHT', 1 )
+                break
+            
+            case 'ArrowRight':
+                emitKey( 'BTM_RIGHT', 1 )
+                break
+            
+
+        }
+
+        return false
+
+    }
+
+    keyReleased( e ) {
+
+        switch (e.key) {
+
+            case 'w':
+                emitKey( 'TOP_LEFT', 0 )
+                break
+            
+            case 's':
+                emitKey( 'BTM_LEFT', 0 )
+                break
+            
+            case 'ArrowLeft':
+                emitKey( 'TOP_RIGHT', 0 )
+                break
+            
+            case 'ArrowRight':
+                emitKey( 'BTM_RIGHT', 0 )
+                break
+
+        }
+
+    }
+
+    emitKey( pos, s ) {
+        socket.emit( 'key', new GridKey( GridKey[ pos ].x, GridKey[ pos ].y, s ) )
     }
 
     mouseClicked( e ) {
@@ -61,6 +112,20 @@ export default class Sketch {
         console.log( e )
 
     }
+
+    setupSocketHandlers( socket ) {
+
+        socket.on( 'key', ( msg ) => {
+            console.log( msg )
+        } )
+
+        socket.on( 'led', ( msg ) => {
+            console.log( msg )
+        } )
+
+    }
+
+    /******************************/
 
     /**
      * Not yet working!
@@ -151,15 +216,21 @@ export default class Sketch {
             window[ prop ] = this[ prop ]
         }
 
-        this.convertPropsToGlobal( this.model )
+        this.convertModelToGlobal()
 
     }
 
-    // Convert model properties into global variables
+    /**
+     * Convert model properties into global variables
+     */
     convertPropsToGlobal( obj ) {
         for ( const prop of Object.getOwnPropertyNames( obj ) ) {
             window[ prop ] = obj[ prop ]
         }
+    }
+
+    convertModelToGlobal() {
+        this.convertPropsToGlobal( this.model )
     }
 
 }

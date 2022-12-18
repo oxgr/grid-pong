@@ -5,7 +5,7 @@ main()
 
 function main() {
 
-    const sketch = new Sketch()
+    const sketch = new Sketch() 
 
     const MODE = 
         // 'instance'

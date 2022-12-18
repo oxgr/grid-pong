@@ -31,6 +31,7 @@ export default class LocalServer {
     static setupRoutes( app ) {
         app.use( express.static( 'public' ) )
         app.use( '/node_modules', express.static( './node_modules' ) )
+        app.use( '/src', express.static( './src' ) )
 
         // app.get( '/', ( req, res ) => {
         //     res.sendFile( path.resolve('./public/index.html') )
@@ -50,15 +51,17 @@ export default class LocalServer {
 
             console.log( `New connection @ ${socket.id}` )
 
-            socket.on( 'led', ( led ) => {
+            socket.on( 'led', ( msg ) => {
 
-                console.log( `[IO]: led, ${led}` );
+                console.log( `[IO]: led, ${msg}` );
+                socket.emit( msg )
     
             } )
 
-            socket.on( 'key', ( key ) => {
+            socket.on( 'key', ( msg ) => {
 
-                console.log( `[IO]: key, ${key}` );
+                console.log( '[i/o]: key', msg );
+                socket.emit( msg )
     
             } )
 
