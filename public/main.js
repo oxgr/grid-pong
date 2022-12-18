@@ -1,22 +1,24 @@
 import 'p5'
-import { setup, draw, fn } from './sketch.js'
+import Sketch from './sketch.js'
 
 main()
 
 function main() {
 
-    // const MODE = 'instance'
-    const MODE = 'global'
+    const sketch = new Sketch()
+
+    const MODE = 
+        // 'instance'
+        'global'
 
     switch ( MODE ) {
 
         case 'instance':
-            new p5( fn, document.getElementById( 'canvas' ) )
+            new p5( sketch.instance(), document.getElementById( 'canvas' ) )
             break
 
         case 'global':
-            window.setup = setup
-            window.draw = draw
+            sketch.global()
             break
 
     }

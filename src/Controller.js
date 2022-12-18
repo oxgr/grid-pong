@@ -2,9 +2,6 @@ export default class Controller {
 
     grid
 
-    /**
-     * 
-     */
     last
     current
 
@@ -12,7 +9,7 @@ export default class Controller {
 
         this.grid = grid
 
-        grid.onKey = this.onKey
+        grid.key = this.onKey
 
     }
 

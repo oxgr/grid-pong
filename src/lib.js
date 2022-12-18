@@ -6,7 +6,11 @@ import View from './View.js'
 
 export async function run() {
 
+    
+
     const server = new LocalServer()
+
+    console.log( '\n------------\n')
 
     const 
         ROWS = 8, 
@@ -24,6 +28,12 @@ export async function run() {
 
     const view = new View( grid, ROWS, COLS, STEPS )
     const controller = new Controller( grid )
+
+    controller.grid.key( { 
+        x: 4,
+        y: 6,
+        s: 1
+    })
 
     // view.startLoop()
 

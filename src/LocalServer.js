@@ -12,7 +12,6 @@ export default class LocalServer {
     bs
 
     io
-    mainSocket
 
     constructor() {
 
@@ -20,7 +19,7 @@ export default class LocalServer {
         this.port = process.env.PORT || 3000
         this.server = this.app.listen( this.port )
         console.log( `Server runnning on localhost:${3000}` )
-        
+
         LocalServer.setupRoutes( this.app )
 
         this.bs = LocalServer.setupBrowserSync()
@@ -53,27 +52,21 @@ export default class LocalServer {
 
             socket.on( 'led', ( led ) => {
 
-                console.log( `[IO]: led - ${led}` );
+                console.log( `[IO]: led, ${led}` );
     
             } )
 
-            socket = LocalServer.initSocket( socket )
+            socket.on( 'key', ( key ) => {
+
+                console.log( `[IO]: key, ${key}` );
+    
+            } )
+
+            // socket.emit( 'key', { x: 1, y: 2, s: 0 })
 
         })
 
         return io
-
-    }
-
-    static initSocket( socket ) {
-
-        socket.on( 'led', ( led ) => {
-
-            console.log( led );
-
-        } )
-
-        return socket
 
     }
 

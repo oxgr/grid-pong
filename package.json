@@ -12,6 +12,7 @@
   "author": "Faadhi Fauzi",
   "license": "ISC",
   "dependencies": {
+    "@types/p5": "^1.4.3",
     "browser-sync": "^2.11.2",
     "express": "^4.18.2",
     "monome-grid": "^1.0.2",
