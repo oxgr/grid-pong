@@ -46,6 +46,10 @@ export default class GridLed {
         return this.array.map( row => row.map( button => button.brightness ))
     }
 
+    set( bri, row, col ) {
+        this.array[ row ][ col ].brightness = bri
+    }
+
     draw() {
 
         const margin = 20

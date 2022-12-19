@@ -35,7 +35,7 @@ export default function Pong( p ) {
         console.log( window );
 
         const halfWidth = window.innerWidth * 0.5
-        
+
         p.createCanvas( halfWidth, halfWidth )
         p.background( 'pink' )
 
@@ -53,13 +53,13 @@ export default function Pong( p ) {
 
         model.ball = new Ball( p )
 
-        
+
 
     }
 
     p.draw = () => {
 
-        p.fill( 'pink' )
+        p.fill( 'black' )
         // p.noStroke()
         p.rect( 0, 0, p.width, p.height )
 
@@ -81,6 +81,9 @@ export default function Pong( p ) {
 
         model.ball.move()
         model.ball.draw()
+
+        // const led = sampleSketchToLed( p )
+        // model.socket.emit( 'led', led )
 
     }
 
@@ -119,7 +122,9 @@ export default function Pong( p ) {
                 break
 
             case ' ':
-                model.socket.emit( 'led', randomLed() )
+                const led = sampleSketchToLed( p ).plainArray()
+                model.socket.emit( 'led', led )
+                // model.socket.emit( 'led', randomLed() )
                 break
 
 
@@ -185,8 +190,54 @@ export default function Pong( p ) {
         return new GridLed( p ).randomise().plainArray()
     }
 
+    function sampleSketchToLed( p ) {
+
+        const led = new GridLed( p )
+
+        const widthEighth = p.width * 0.125
+        const heightEighth = p.width * 0.125
+        const pixelBlock = widthEighth * heightEighth
+
+        // console.log( avg )
+        
+        // p.loadPixels()
+        
+
+        for ( const row of Array( GridLed.ROWS ).keys() ) {
+            for ( const col of Array( GridLed.COLS ).keys() ) {
+
+                const x = row * heightEighth
+                const y = col * widthEighth
+
+                const c = p.get( x, y, widthEighth, heightEighth )
+                c.loadPixels()
+                const sum = c.pixels.reduce( ( prev, curr ) => prev + curr )
+                const avg = Math.floor( sum / c.pixels.length )
+                const map = Math.floor( avg * 0.0625 )
+
+                led.set( map, row, col )
+
+                // const blockCount = ( row * col ) + col
+                // const start = pixelBlock * blockCount
+                // let sum = 0
+                // for ( let i = start, j = 0, count = 0; count < pixelBlock; i++ ) {
+                    
+                //     const pixel = p.pixels[ i ]
+                // }
+            }
+
+        }
+
+        // console.log( led );
+
+        return led
+
+    }
+
 }
+        
+            
+        
 
-
-
+        
 

@@ -11,15 +11,17 @@ export default class Board extends Wall {
     constructor( p, side ) {
 
         super( p, side )
+        
+        this.step = this.p.height * 0.125
 
         this.w = 20
         this.h = 100
 
         this.side = side
-        this.step = 20
 
         const x = this.side === 'left' ? 0 : p.width - this.w
-        const y = ( p.height * 0.5 ) - ( this.h * 0.5 )
+        // const y = ( p.height * 0.5 ) - ( this.h * 0.5 )
+        const y = Math.floor( Math.random() * 6 * this.step )
 
         this.pos = this.p.createVector( x, y )
         if ( this.side === 'left' ) this.bounds.set( this.pos.x + this.w, this.w, 0 )
@@ -32,7 +34,7 @@ export default class Board extends Wall {
     draw() {
         // this.p.noStroke()
         this.p.fill( 'white' )
-        this.p.rect( this.pos.x, this.pos.y, this.w, this.h, 20 )
+        this.p.rect( this.pos.x, this.pos.y, this.w, this.h, 5 )
     }
 
     move( dir, step = this.step ) {
