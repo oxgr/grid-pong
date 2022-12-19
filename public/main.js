@@ -1,11 +1,13 @@
 import 'p5'
 import Pong from './pong.js'
+import GridView from './gridView.js'
 
 main()
 
 function main() {
 
-    const pong = new p5( Pong, document.getElementById( 'canvas' ) )
+    const pong = new p5( Pong, document.getElementById( 'sketch' ) )
+    const view = new p5( GridView, document.getElementById( 'view' ) )
 
     // const pong = new Pong()
 

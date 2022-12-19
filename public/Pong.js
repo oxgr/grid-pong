@@ -1,8 +1,6 @@
 // Reference for types / autocomplete
 /* /// <reference path="../node_modules/@types/p5/global.d.ts" /> */
 
-// import p5Sketch from './Sketch.js'
-
 import * as Socket from 'socket.io'
 import { GridKey } from 'Controller'
 import Board from './Board.js'
@@ -32,7 +30,11 @@ export default function Pong( p ) {
         model.url = `http://localhost:${model.port}`
         model.socket = Socket.io( model.url )
 
-        p.createCanvas( 400, 400 )
+        console.log( window );
+
+        const halfWidth = window.innerWidth * 0.5
+        
+        p.createCanvas( halfWidth, halfWidth )
         p.background( 'pink' )
 
         model.walls = {
@@ -56,8 +58,10 @@ export default function Pong( p ) {
     p.draw = () => {
 
         p.fill( 'pink' )
+        // p.noStroke()
         p.rect( 0, 0, p.width, p.height )
 
+        p.stroke( 'black' )
         p.circle( p.mouseX, p.mouseY, 10 )
 
         model.boards.left.draw()
@@ -149,9 +153,6 @@ export default function Pong( p ) {
         }
     }
 
-
-
-
     p.mouseClicked = ( event ) => {
         console.log( event )
     }
@@ -173,7 +174,7 @@ export default function Pong( p ) {
             console.log( msg )
         } )
 
-        socket.on( 'led', msg => {
+        model.socket.on( 'led', msg => {
             console.log( msg )
         } )
     }

@@ -1,5 +1,8 @@
 export default class View {
 
+    static ROWS = 8
+    static COLS = 8
+
     constructor( grid, rows, cols, steps ) {
 
         this.grid = grid
@@ -43,7 +46,7 @@ export default class View {
 
         for ( let y = 0; y < rows; y++ ) {
             
-            led[ y ] = [];
+            led[ y ] = []
     
             for ( let x = 0; x < cols; x++ )
                 led[ y ][ x ] = Math.floor( ( x / rows ) * max );

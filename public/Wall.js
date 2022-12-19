@@ -61,7 +61,7 @@ export default class Wall {
             ( this.side === 'left' && this.ghost.x < this.bounds.x ) ||
             ( this.side === 'right' && this.ghost.x > this.bounds.x )
         ) {
-            console.log( `Collided with ${this.side}` );
+            // console.log( `Collided with ${this.side}` );
             return this
         }
 
