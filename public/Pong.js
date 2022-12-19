@@ -24,9 +24,7 @@ class Model {
 
 export default function Pong( p ) {
 
-    // const pong = new Pong( p )
     const model = new Model()
-
 
     p.setup = () => {
 
@@ -52,7 +50,7 @@ export default function Pong( p ) {
         model.boards = {
             left: new Board( p, 'left' ),
             right: new Board( p, 'right' )
-        }   
+        }
 
         model.ball = new Ball( p, 40 )
 
@@ -69,9 +67,6 @@ export default function Pong( p ) {
         p.noStroke()
         p.rect( 0, 0, p.width, p.height )
 
-        // p.stroke( 'black' )
-        p.circle( p.mouseX, p.mouseY, 10 )
-
         model.boards.left.draw()
         model.boards.right.draw()
 
@@ -82,7 +77,19 @@ export default function Pong( p ) {
                 .find( wall => wall.collidedWith( model.ball ) )
 
         if ( collidedWall ) {
-            model.ball.bounce( collidedWall )
+            console.log( 'Collided with', collidedWall.side, collidedWall.constructor?.name )
+
+
+            if ( ( collidedWall.side === 'left' ||
+                collidedWall.side === 'right' ) &&
+                !( collidedWall instanceof Board ) ) {
+                model.ball.reset()
+            } else {
+
+                model.ball.bounce( collidedWall )
+            }
+
+
         }
 
         model.ball.move()
@@ -92,10 +99,6 @@ export default function Pong( p ) {
             const led = sampleSketchToLed( p ).plainArray()
             model.socket.emit( 'led', led )
         }
-
-
-        // const led = sampleSketchToLed( p )
-        // model.socket.emit( 'led', led )
 
     }
 
@@ -202,8 +205,6 @@ export default function Pong( p ) {
 
     function sampleSketchToLed( p ) {
 
-        // const led = new GridLed( p )
-
         const widthEighth = p.width * 0.125
         const heightEighth = p.width * 0.125
         const pixelBlock = widthEighth * heightEighth
@@ -218,58 +219,35 @@ export default function Pong( p ) {
         c.loadPixels()
         // console.log( c );
 
-        // return model.led
-
         for ( const row of Array( GridLed.ROWS ).keys() ) {
             for ( const col of Array( GridLed.COLS ).keys() ) {
 
                 let x = col, y = row, d = density; // set these to the coordinates
-                let off = (x * c.width + y) * d * 4;
+                let off = ( x * c.width + y ) * d * 4;
                 let comp = [
-                    c.pixels[off],
-                    c.pixels[off + 1],
-                    c.pixels[off + 2],
+                    c.pixels[ off ],
+                    c.pixels[ off + 1 ],
+                    c.pixels[ off + 2 ],
                     // c.pixels[off + 3]
                 ];
 
-                let avg = comp.reduce( (p, c) => p + c ) / comp.length
+                let avg = comp.reduce( ( p, c ) => p + c ) / comp.length
                 const map = Math.floor( avg * 0.0625 )
 
                 model.led.set( map, row, col )
 
-                // const x = row * heightEighth
-                // const y = col * widthEighth
-
-                // const c = p.get( x, y, widthEighth, heightEighth )
-                // console.log( c );
-                // c.loadPixels()
-                // const sum = c.pixels.reduce( ( prev, curr ) => prev + curr )
-                // const avg = Math.floor( sum / c.pixels.length )
-                // const map = Math.floor( avg * 0.0625 )
-
-                // model.led.set( map, row, col )
-
-                // const blockCount = ( row * col ) + col
-                // const start = pixelBlock * blockCount
-                // let sum = 0
-                // for ( let i = start, j = 0, count = 0; count < pixelBlock; i++ ) {
-                    
-                //     const pixel = p.pixels[ i ]
-                // }
             }
 
         }
-
-        // console.log( model.led );
 
         return model.led
 
     }
 
 }
-        
-            
-        
 
-        
+
+
+
+
 

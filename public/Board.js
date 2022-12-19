@@ -51,4 +51,16 @@ export default class Board extends Wall {
 
     }
 
+    collidedWith( ball ) {
+        const result = super.collidedWith( ball )
+
+        if (result && 
+            ball.pos.y > this.pos.y &&
+            ball.pos.y < this.pos.y + this.h) return this
+
+            return false
+
+
+    }
+
 }

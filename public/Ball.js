@@ -15,13 +15,14 @@ export default class Ball {
             this.p.height * 0.5
         )
 
-        this.dir = this.p.createVector( Math.random(), Math.random() ).normalize()
+        this.dir = this.p.createVector( Math.random() - 0.5, Math.random() - 0.5 ).normalize()
         this.vel = this.p.createVector( this.dir.x * this.speed, this.dir.y * this.speed )
 
     }
 
     move() {
 
+        this.vel.set( this.dir.x * this.speed, this.dir.y * this.speed )
         this.pos.add( this.vel )
 
     }
@@ -30,6 +31,17 @@ export default class Ball {
 
         this.p.circle( this.pos.x, this.pos.y, this.size )
 
+    }
+
+    reset() {
+        this.pos.set(
+            this.p.width * 0.5,
+            this.p.height * 0.5
+        )
+        this.dir.set(
+            Math.random() - 0.5,
+            Math.random() - 0.5
+        ).normalize()
     }
 
     // checkCollision() {
@@ -45,7 +57,7 @@ export default class Ball {
 
     bounce( wall ) {
 
-        this.vel.reflect( wall.normal )
+        this.dir.reflect( wall.normal )
 
     }
 
