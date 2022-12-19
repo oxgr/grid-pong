@@ -54,14 +54,14 @@ export default class LocalServer {
             socket.on( 'led', ( msg ) => {
 
                 console.log( '[io.led]:', msg );
-                socket.emit( msg )
+                io.emit( 'led', msg )
     
             } )
 
             socket.on( 'key', ( msg ) => {
 
                 console.log( '[io.key]: ', msg );
-                socket.emit( 'key', msg )
+                io.emit( 'key', msg )
     
             } )
 

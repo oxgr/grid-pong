@@ -1,8 +1,10 @@
 import GridLed from "./GridLed.js"
+import * as Socket from 'socket.io'
 
 class Model {
 
     led
+    socket
 
 }
 
@@ -11,6 +13,12 @@ export default function GridView( p ) {
     const model = new Model()
 
     p.setup = () => {
+
+        model.port = 3000
+        model.url = `http://localhost:${model.port}`
+        model.socket = Socket.io( model.url )
+
+        setupSocketHandlers( model.socket )
 
         const halfWidth = window.innerWidth * 0.5
         
@@ -33,8 +41,21 @@ export default function GridView( p ) {
         p.fill( '#ddd' )
         p.rect( centerX, centerY, p.width - pad , p.height - pad, padHalf  )
 
+        // model.led.randomise()
         model.led.draw()
 
+    }
+
+    function setupSocketHandlers( socket ) {
+
+        // socket.on( 'key', msg => {
+        //     console.log( msg )
+        // } )
+
+        socket.on( 'led', msg => {
+            console.log( msg )
+            model.led.update( msg )
+        } )
     }
 
 }

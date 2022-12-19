@@ -1,9 +1,10 @@
 // Reference for types / autocomplete
-/* /// <reference path="../node_modules/@types/p5/global.d.ts" /> */
+// /* /// <reference path="../node_modules/@types/p5/global.d.ts" /> */
 
 import * as Socket from 'socket.io'
 import { GridKey } from 'Controller'
 import Board from './Board.js'
+import GridLed from './GridLed.js'
 import Ball from './Ball.js'
 import Wall from './Wall.js'
 
@@ -29,6 +30,7 @@ export default function Pong( p ) {
         model.port = 3000
         model.url = `http://localhost:${model.port}`
         model.socket = Socket.io( model.url )
+        setupSocketHandlers( model.socket )
 
         console.log( window );
 
@@ -51,7 +53,7 @@ export default function Pong( p ) {
 
         model.ball = new Ball( p )
 
-        setupSocketHandlers( model.socket )
+        
 
     }
 
@@ -117,7 +119,7 @@ export default function Pong( p ) {
                 break
 
             case ' ':
-                model.ball.bounce()
+                model.socket.emit( 'led', randomLed() )
                 break
 
 
@@ -174,9 +176,13 @@ export default function Pong( p ) {
             console.log( msg )
         } )
 
-        model.socket.on( 'led', msg => {
-            console.log( msg )
-        } )
+        // model.socket.on( 'led', msg => {
+        //     console.log( msg )
+        // } )
+    }
+
+    function randomLed() {
+        return new GridLed( p ).randomise().plainArray()
     }
 
 }

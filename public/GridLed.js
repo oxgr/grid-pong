@@ -8,19 +8,42 @@ export default class GridLed {
     constructor( p ) {
         this.p = p
 
+        this.buttons = []
         this.array = []
+
         for ( const i of Array( GridLed.ROWS ).keys() ) {
 
             this.array[ i ] = []
 
             for ( const j of Array( GridLed.COLS ).keys() ) {
 
-                this.array[ i ][ j ] = new GridButton( p, i, j, (this.p.width / GridLed.ROWS) * 0.5 )
+                const button = new GridButton( p, i, j, (this.p.width / GridLed.ROWS) * 0.5 )
+                this.array[ i ][ j ] = button
+                this.buttons.push( button )
 
             }
 
         }
 
+    }
+
+    update( array ) {
+        this.iterate( button => button.brightness = array[ button.row ][ button.col ] )
+        return this
+    }
+
+    randomise() {
+        this.iterate( button => button.randomise() )
+        return this
+    }
+
+    iterate( fn ) {
+        this.buttons.forEach( button => fn( button ) )
+        return this
+    }
+
+    plainArray() {
+        return this.array.map( row => row.map( button => button.brightness ))
     }
 
     draw() {
