@@ -1,3 +1,6 @@
+// Reference for types / autocomplete
+/// <reference path="../node_modules/@types/p5/global.d.ts" />
+
 export default class Sketch {
 
     setup() {}

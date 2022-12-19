@@ -5,22 +5,24 @@ main()
 
 function main() {
 
-    const pong = new Pong()
+    const pong = new p5( Pong, document.getElementById( 'canvas' ) )
 
-    const MODE = 
-        'instance'
-        // 'global'
+    // const pong = new Pong()
 
-    switch ( MODE ) {
+    // const MODE = 
+    //     'instance'
+    //     // 'global'
 
-        case 'instance':
-            new p5( pong.instanceTest(), document.getElementById( 'canvas' ) )
-            break
+    // switch ( MODE ) {
 
-        case 'global':
-            pong.global()
-            break
+    //     case 'instance':
+    //         new p5( pong.instanceTest(), document.getElementById( 'canvas' ) )
+    //         break
 
-    }
+    //     case 'global':
+    //         pong.global()
+    //         break
+
+    // }
 
 }

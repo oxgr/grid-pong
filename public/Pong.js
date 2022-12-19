@@ -1,90 +1,119 @@
 // Reference for types / autocomplete
-/// <reference path="../node_modules/@types/p5/global.d.ts" />
+/* /// <reference path="../node_modules/@types/p5/global.d.ts" /> */
+
+// import p5Sketch from './Sketch.js'
 
 import * as Socket from 'socket.io'
 import { GridKey } from 'Controller'
-import p5Sketch from './Sketch.js'
+import Board from './Board.js'
+import Ball from './Ball.js'
+import Wall from './Wall.js'
 
 class Model {
-    
+
+    port
+    url
+    socket
+
+    boards
+    walls
+
 }
 
 export default function Pong( p ) {
 
     // const pong = new Pong( p )
-    const model = new Model() 
+    const model = new Model()
+
 
     p.setup = () => {
 
+        model.port = 3000
+        model.url = `http://localhost:${model.port}`
+        model.socket = Socket.io( model.url )
 
+        p.createCanvas( 400, 400 )
+        p.background( 'pink' )
+
+        model.walls = {
+            top: new Wall( p, 'top' ),
+            bottom: new Wall( p, 'bottom' ),
+            left: new Wall( p, 'left' ),
+            right: new Wall( p, 'right' ),
+        }
+
+        model.boards = {
+            left: new Board( p, 'left' ),
+            right: new Board( p, 'right' )
+        }
+
+        model.ball = new Ball( p )
+
+        setupSocketHandlers( model.socket )
 
     }
 
     p.draw = () => {
 
+        p.fill( 'pink' )
+        p.rect( 0, 0, p.width, p.height )
 
+        p.circle( p.mouseX, p.mouseY, 10 )
 
-    }
+        model.boards.left.draw()
+        model.boards.right.draw()
 
-}
+        const collidedWall =
+            Object.values( model.boards )
+                .find( board => board.collidedWith( model.ball ) ) ??
+            Object.values( model.walls )
+                .find( wall => wall.collidedWith( model.ball ) )
 
-export default class Pong extends p5Sketch {
-
-    constructor( p ) {
-        this.p = p
-    }
-    
-    port = 3000
-    url = `http://localhost:${this.port}`
-    socket = Socket.io( this.url )
-
-    setup( p ) {
-
-        return () => {
-
-            // console.error( {model:this.model} )
-
-            setupSocketHandlers( socket )
-
-            let led = [ [ 0, 1 ], [ 2, 3 ] ]
-
-            socket.emit( 'led', led )
-
-            p.createCanvas( 400, 400 )
-            p.background( 'pink' )
-
+        if ( collidedWall ) {
+            model.ball.bounce( collidedWall )
         }
 
-    }
-
-    draw() {
-
-        circle( mouseX, mouseY, 10 )
-
-        // let _ = 
-
-        // console.log(count++)
+        model.ball.move()
+        model.ball.draw()
 
     }
 
-    keyPressed( e ) {
+    p.keyPressed = ( event ) => {
 
-        switch ( e.key ) {
+        const emitKeyMap = {
+            'w': 'TOP_LEFT',
+            's': 'BTM_LEFT',
+            'ArrowLeft': 'TOP_RIGHT',
+            'ArrowRight': 'BTM_RIGHT',
+        }
+
+        // if ( Object.entries( emitKeyMap ).some( k => k === event.key))
+        //     emitKey( emitKeyMap[ event.key ], 1 )
+
+        switch ( event.key ) {
 
             case 'w':
-                emitKey( 'TOP_LEFT', 1 )
+                emitKey( emitKeyMap[ 'w' ], 1 )
+                model.boards.left.move( 'up' )
                 break
 
             case 's':
-                emitKey( 'BTM_LEFT', 1 )
-                break
-
-            case 'ArrowLeft':
-                emitKey( 'TOP_RIGHT', 1 )
+                emitKey( emitKeyMap[ 's' ], 1 )
+                model.boards.left.move( 'down' )
                 break
 
             case 'ArrowRight':
-                emitKey( 'BTM_RIGHT', 1 )
+                emitKey( emitKeyMap[ 'ArrowRight' ], 1 )
+                model.boards.right.move( 'up' )
+                break
+
+            case 'ArrowLeft':
+                emitKey( emitKeyMap[ 'ArrowLeft' ], 1 )
+                model.boards.right.move( 'down' )
+                break
+
+            case ' ':
+                model.ball.bounce()
                 break
 
 
@@ -94,9 +123,11 @@ export default class Pong extends p5Sketch {
 
     }
 
-    keyReleased( e ) {
+    p.keyReleased = ( event ) => {
 
-        switch ( e.key ) {
+        // console.log( event )
+
+        switch ( event.key ) {
 
             case 'w':
                 emitKey( 'TOP_LEFT', 0 )
@@ -114,12 +145,19 @@ export default class Pong extends p5Sketch {
                 emitKey( 'BTM_RIGHT', 0 )
                 break
 
+                return false
         }
-
     }
 
-    emitKey( pos, s ) {
-        socket.emit(
+
+
+
+    p.mouseClicked = ( event ) => {
+        console.log( event )
+    }
+
+    function emitKey( pos, s ) {
+        model.socket.emit(
             'key',
             new GridKey(
                 GridKey[ pos ].x,
@@ -129,22 +167,19 @@ export default class Pong extends p5Sketch {
         )
     }
 
-    mouseClicked( e ) {
+    function setupSocketHandlers( socket ) {
 
-        console.log( e )
-
-    }
-
-    setupSocketHandlers( socket ) {
-
-        socket.on( 'key', ( msg ) => {
+        model.socket.on( 'key', msg => {
             console.log( msg )
         } )
 
-        socket.on( 'led', ( msg ) => {
+        socket.on( 'led', msg => {
             console.log( msg )
         } )
-
     }
-        
+
 }
+
+
+
+
