@@ -69,8 +69,8 @@ export default class GridLed {
 
         function getPos( row, col ) {
 
-            const x = originX + ( row * spacing )
-            const y = originY + ( col * spacing )
+            const x = originX + ( col * spacing )
+            const y = originY + ( row * spacing )
 
             return { x, y }
 

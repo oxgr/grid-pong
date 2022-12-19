@@ -223,7 +223,7 @@ export default function Pong( p ) {
             for ( const col of Array( GridLed.COLS ).keys() ) {
 
                 let x = col, y = row, d = density; // set these to the coordinates
-                let off = ( x * c.width + y ) * d * 4;
+                let off = ( y * c.width + x ) * d * 4;
                 let comp = [
                     c.pixels[ off ],
                     c.pixels[ off + 1 ],
