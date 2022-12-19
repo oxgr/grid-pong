@@ -7,6 +7,7 @@ import Board from './Board.js'
 import GridLed from './GridLed.js'
 import Ball from './Ball.js'
 import Wall from './Wall.js'
+// import p5 from 'p5'
 
 class Model {
 
@@ -16,6 +17,8 @@ class Model {
 
     boards
     walls
+
+    led
 
 }
 
@@ -49,21 +52,24 @@ export default function Pong( p ) {
         model.boards = {
             left: new Board( p, 'left' ),
             right: new Board( p, 'right' )
-        }
+        }   
 
-        model.ball = new Ball( p )
+        model.ball = new Ball( p, 40 )
 
+        model.led = new GridLed( p )
 
+        console.log( p );
 
     }
 
     p.draw = () => {
 
-        p.fill( 'black' )
-        // p.noStroke()
+        // p.fill( 'black' )
+        p.fill( 0, 0, 0, 10 )
+        p.noStroke()
         p.rect( 0, 0, p.width, p.height )
 
-        p.stroke( 'black' )
+        // p.stroke( 'black' )
         p.circle( p.mouseX, p.mouseY, 10 )
 
         model.boards.left.draw()
@@ -81,6 +87,12 @@ export default function Pong( p ) {
 
         model.ball.move()
         model.ball.draw()
+
+        if ( p.frameCount % 6 === 0 ) {
+            const led = sampleSketchToLed( p ).plainArray()
+            model.socket.emit( 'led', led )
+        }
+
 
         // const led = sampleSketchToLed( p )
         // model.socket.emit( 'led', led )
@@ -122,8 +134,6 @@ export default function Pong( p ) {
                 break
 
             case ' ':
-                const led = sampleSketchToLed( p ).plainArray()
-                model.socket.emit( 'led', led )
                 // model.socket.emit( 'led', randomLed() )
                 break
 
@@ -192,30 +202,52 @@ export default function Pong( p ) {
 
     function sampleSketchToLed( p ) {
 
-        const led = new GridLed( p )
+        // const led = new GridLed( p )
 
         const widthEighth = p.width * 0.125
         const heightEighth = p.width * 0.125
         const pixelBlock = widthEighth * heightEighth
 
-        // console.log( avg )
-        
-        // p.loadPixels()
-        
+        const c = p.get( 0, 0, p.width, p.height )
+        const res = 8
+        const density = res / GridLed.ROWS
+        c.filter( 'blur', 0.4 )
+        c.resize( res, res )
+        // c.resize( p.width, p.height )
+        // p.image( c, 0, 0 )
+        c.loadPixels()
+        // console.log( c );
+
+        // return model.led
 
         for ( const row of Array( GridLed.ROWS ).keys() ) {
             for ( const col of Array( GridLed.COLS ).keys() ) {
 
-                const x = row * heightEighth
-                const y = col * widthEighth
+                let x = col, y = row, d = density; // set these to the coordinates
+                let off = (x * c.width + y) * d * 4;
+                let comp = [
+                    c.pixels[off],
+                    c.pixels[off + 1],
+                    c.pixels[off + 2],
+                    // c.pixels[off + 3]
+                ];
 
-                const c = p.get( x, y, widthEighth, heightEighth )
-                c.loadPixels()
-                const sum = c.pixels.reduce( ( prev, curr ) => prev + curr )
-                const avg = Math.floor( sum / c.pixels.length )
+                let avg = comp.reduce( (p, c) => p + c ) / comp.length
                 const map = Math.floor( avg * 0.0625 )
 
-                led.set( map, row, col )
+                model.led.set( map, row, col )
+
+                // const x = row * heightEighth
+                // const y = col * widthEighth
+
+                // const c = p.get( x, y, widthEighth, heightEighth )
+                // console.log( c );
+                // c.loadPixels()
+                // const sum = c.pixels.reduce( ( prev, curr ) => prev + curr )
+                // const avg = Math.floor( sum / c.pixels.length )
+                // const map = Math.floor( avg * 0.0625 )
+
+                // model.led.set( map, row, col )
 
                 // const blockCount = ( row * col ) + col
                 // const start = pixelBlock * blockCount
@@ -228,9 +260,9 @@ export default function Pong( p ) {
 
         }
 
-        // console.log( led );
+        // console.log( model.led );
 
-        return led
+        return model.led
 
     }
 

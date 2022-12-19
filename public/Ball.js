@@ -1,6 +1,6 @@
 export default class Ball {
 
-    constructor( p, size = 20 ) {
+    constructor( p, size = 30 ) {
 
         this.p = p
 
@@ -8,7 +8,7 @@ export default class Ball {
         // this.x = this.p.width * 0.5
         // this.y = this.p.height * 0.5
 
-        this.speed = 4
+        this.speed = 2
 
         this.pos = this.p.createVector(
             this.p.width * 0.5,

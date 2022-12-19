@@ -52,10 +52,10 @@ export default class GridLed {
 
     draw() {
 
-        const margin = 20
-        const spacing = ( (this.p.width - (margin * 2) ) / GridLed.ROWS )
-        const originX = margin * 2
-        const originY = margin * 2
+        const margin = 30
+        const spacing = ( (this.p.width - margin ) / GridLed.ROWS )
+        const originX = margin
+        const originY = margin
 
         function getPos( row, col ) {
 

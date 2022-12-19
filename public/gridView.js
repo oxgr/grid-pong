@@ -53,7 +53,7 @@ export default function GridView( p ) {
         // } )
 
         socket.on( 'led', msg => {
-            console.log( msg )
+            // console.log( msg )
             model.led.update( msg )
         } )
     }
