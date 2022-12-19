@@ -77,3 +77,13 @@ export default class View {
     }
 
 }
+
+export class GridLed {
+
+    constructor() {
+
+        
+
+    }
+
+}

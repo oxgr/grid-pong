@@ -22,7 +22,7 @@ export default class LocalServer {
 
         LocalServer.setupRoutes( this.app )
 
-        this.bs = LocalServer.setupBrowserSync()
+        this.bs = LocalServer.setupBrowserSync( this.port )
 
         this.io = LocalServer.setupSocket( this.server )
 
@@ -53,15 +53,15 @@ export default class LocalServer {
 
             socket.on( 'led', ( msg ) => {
 
-                console.log( `[IO]: led, ${msg}` );
+                console.log( '[io.led]:', msg );
                 socket.emit( msg )
     
             } )
 
             socket.on( 'key', ( msg ) => {
 
-                console.log( '[i/o]: key', msg );
-                socket.emit( msg )
+                console.log( '[io.key]: ', msg );
+                socket.emit( 'key', msg )
     
             } )
 
@@ -73,7 +73,7 @@ export default class LocalServer {
 
     }
 
-    static setupBrowserSync() {
+    static setupBrowserSync( port ) {
 
         const bs = browserSync.create()
 
@@ -84,7 +84,7 @@ export default class LocalServer {
             // server: {
             //     baseDir: 'public'
             // }
-            proxy: 'localhost:3000',
+            proxy: `localhost:${port}`,
             port: 4000,
             open: false,
         } )

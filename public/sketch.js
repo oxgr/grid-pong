@@ -1,131 +1,7 @@
-// Reference for types / autocomplete
-/// <reference path="../node_modules/@types/p5/global.d.ts" />
-
-import * as Socket from 'socket.io'
-import {GridKey} from 'Controller'
-
-class Model {
-    
-    // socket = ( () => {
-    //     const port = 3000
-    //     const url = `http://localhost:${port}`
-    //     return Socket.io( url )
-    // } )()
-
-    port = 3000
-    url = `http://localhost:${this.port}`
-    socket = Socket.io( this.url )
-
-    count = 1
-
-}
-
 export default class Sketch {
 
-    model = new Model()
-
-    setup() {
-
-        // console.error( {model:this.model} )
-
-        setupSocketHandlers( socket )
-
-        let led = [ [ 0, 1 ], [ 2, 3 ] ]
-
-        socket.emit( 'led', led )
-        socket.emit( 'key', { x: 1, y: 2, s: 0 } )
-
-        createCanvas( 400, 400 )
-        background( 'pink' )
-
-    }
-
-    draw() {
-
-        circle( mouseX, mouseY, 10 )
-
-        // let _ = 
-
-        // console.log(count++)
-
-    }
-
-    keyPressed( e ) {
-
-        console.log( e.key )
-
-        switch (e.key) {
-
-            case 'w':
-                emitKey( 'TOP_LEFT', 1 )
-                break
-            
-            case 's':
-                emitKey( 'BTM_LEFT', 1 )
-                break
-            
-            case 'ArrowLeft':
-                emitKey( 'TOP_RIGHT', 1 )
-                break
-            
-            case 'ArrowRight':
-                emitKey( 'BTM_RIGHT', 1 )
-                break
-            
-
-        }
-
-        return false
-
-    }
-
-    keyReleased( e ) {
-
-        switch (e.key) {
-
-            case 'w':
-                emitKey( 'TOP_LEFT', 0 )
-                break
-            
-            case 's':
-                emitKey( 'BTM_LEFT', 0 )
-                break
-            
-            case 'ArrowLeft':
-                emitKey( 'TOP_RIGHT', 0 )
-                break
-            
-            case 'ArrowRight':
-                emitKey( 'BTM_RIGHT', 0 )
-                break
-
-        }
-
-    }
-
-    emitKey( pos, s ) {
-        socket.emit( 'key', new GridKey( GridKey[ pos ].x, GridKey[ pos ].y, s ) )
-    }
-
-    mouseClicked( e ) {
-
-        console.log( e )
-
-    }
-
-    setupSocketHandlers( socket ) {
-
-        socket.on( 'key', ( msg ) => {
-            console.log( msg )
-        } )
-
-        socket.on( 'led', ( msg ) => {
-            console.log( msg )
-        } )
-
-    }
-
-    /******************************/
+    setup() {}
+    draw() {}
 
     /**
      * Not yet working!
@@ -160,7 +36,11 @@ export default class Sketch {
 
             console.log( body )
 
-            return Function( 'e', body )
+            const newFunc = Function( 'e', body )
+
+            console.log( {newFunc} )
+
+            return newFunc
         }
 
         console.log( this.constructor.prototype )
@@ -177,11 +57,17 @@ export default class Sketch {
 
         return ( p ) => {
 
-
-            // p.setup = function () {
+            // p.setup = () => {
             //     p.createCanvas( 400, 400 )
             //     p.background( 'pink' )
             // }
+            // p.keyPressed = ( e ) => {
+            //     console.log( e )
+            //     this.socket.emit( 'key', e.key )
+            // }
+
+            
+            // p.setup = this.setup
 
             // p.setup = instancifyFunc( this.setup, 'p' )
 
@@ -191,14 +77,14 @@ export default class Sketch {
                 
                 if ( skips.find( skip => skip === name ) ) continue
                 
-                p[ name ] = instancifyFunc( this[ name ], 'p' )
+                // p[ name ] = instancifyFunc( this[ name ], 'p' )
+                p[ name ] = this[ name ]
 
             }
 
-            // console.log( funcs.setup.toString() )
-            // console.log( p.setup.toString() )
-
-            this.convertPropsToGlobal( this.model )
+            this.convertPropsToGlobal( this )
+            // this.convertPropsToGlobal( p )
+            console.log( p );
 
         }
 
@@ -211,7 +97,22 @@ export default class Sketch {
     global() {
 
         // Convert sketch method names into global functions.
-        for ( const prop of Object.getOwnPropertyNames( this.constructor.prototype ) ) {
+
+        const skips = [
+            'constructor',
+            'instance',
+            'global'
+        ]
+
+        const props = Object
+            .getOwnPropertyNames( this.constructor.prototype )
+            .filter( 
+                prop => !skips.some( 
+                    skip => skip === prop 
+                )
+            )
+
+        for ( const prop of props ) {
             if ( prop === 'constructor' || prop === 'instance' ) continue
             window[ prop ] = this[ prop ]
         }
@@ -225,6 +126,7 @@ export default class Sketch {
      */
     convertPropsToGlobal( obj ) {
         for ( const prop of Object.getOwnPropertyNames( obj ) ) {
+            console.log( prop );
             window[ prop ] = obj[ prop ]
         }
     }

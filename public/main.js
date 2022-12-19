@@ -1,24 +1,24 @@
 import 'p5'
-import Sketch from './sketch.js'
+import Pong from './pong.js'
 
 main()
 
 function main() {
 
-    const sketch = new Sketch() 
+    const pong = new Pong()
 
     const MODE = 
-        // 'instance'
-        'global'
+        'instance'
+        // 'global'
 
     switch ( MODE ) {
 
         case 'instance':
-            new p5( sketch.instance(), document.getElementById( 'canvas' ) )
+            new p5( pong.instanceTest(), document.getElementById( 'canvas' ) )
             break
 
         case 'global':
-            sketch.global()
+            pong.global()
             break
 
     }
