@@ -1,3 +1,4 @@
+import GridLed from './GridLed.js'
 import Wall from './Wall.js'
 
 export default class Board extends Wall {
@@ -14,8 +15,8 @@ export default class Board extends Wall {
         
         this.step = this.p.height * 0.125
 
-        this.w = 20
-        this.h = 100
+        this.w = this.p.width / GridLed.COLS
+        this.h = (this.p.height / GridLed.ROWS) * 3
 
         this.side = side
 

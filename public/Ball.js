@@ -8,7 +8,9 @@ export default class Ball {
         // this.x = this.p.width * 0.5
         // this.y = this.p.height * 0.5
 
-        this.speed = 2
+        this.speed = 4
+
+        this.chaos = 1
 
         this.pos = this.p.createVector(
             this.p.width * 0.5,
@@ -18,7 +20,7 @@ export default class Ball {
         this.dir = this.p.createVector( Math.random() - 0.5, Math.random() - 0.5 ).normalize()
         this.vel = this.p.createVector( this.dir.x * this.speed, this.dir.y * this.speed )
 
-    }
+    }   
 
     move() {
 
@@ -58,6 +60,7 @@ export default class Ball {
     bounce( wall ) {
 
         this.dir.reflect( wall.normal )
+        this.dir.rotate( (Math.random() - 0.5 ) * this.chaos )
 
     }
 

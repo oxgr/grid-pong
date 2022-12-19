@@ -52,7 +52,7 @@ export default function Pong( p ) {
             right: new Board( p, 'right' )
         }
 
-        model.ball = new Ball( p, 40 )
+        model.ball = new Ball( p, p.width / GridLed.COLS )
 
         model.led = new GridLed( p )
 
@@ -212,7 +212,7 @@ export default function Pong( p ) {
         const c = p.get( 0, 0, p.width, p.height )
         const res = 8
         const density = res / GridLed.ROWS
-        c.filter( 'blur', 0.4 )
+        c.filter( 'blur', 0.6 )
         c.resize( res, res )
         // c.resize( p.width, p.height )
         // p.image( c, 0, 0 )
