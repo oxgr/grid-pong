@@ -1,5 +1,5 @@
 import GridLed from "./GridLed.js"
-import * as Socket from 'socket.io'
+import * as Socket from 'socket.io-client'
 import Model from "./Model.js"
 
 class GridModel extends Model{

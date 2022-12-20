@@ -1,11 +1,11 @@
 // import { Pane } from '/node_modules/tweakpane/dist/tweakpane.js'
-import 'tweakpane'
+import { Pane } from 'tweakpane'
 
 export default class Gui {
 
     constructor( paramsObj ) {
 
-        this.pane = new Tweakpane.Pane()
+        this.pane = new Pane()
 
         for ( const [ name, obj ] of Object.entries( paramsObj ) ) {
 
@@ -14,10 +14,9 @@ export default class Gui {
                 title: name
             } )
             folder.on( 'change', obj.update )
-            this.addRecursive( folder, obj.params )
-
+            this.addRecursive( folder, obj.params )  
         }
-
+ 
     }
 
     addRecursive( container, params ) {

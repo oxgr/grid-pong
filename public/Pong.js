@@ -1,6 +1,6 @@
-import * as Socket from 'socket.io'
-import { GridKey } from 'Controller'
+import * as Socket from 'socket.io-client'
 
+import { GridKey } from './GridKey.js'
 import Model from './Model.js'
 import Board from './Board.js'
 import GridLed from './GridLed.js'

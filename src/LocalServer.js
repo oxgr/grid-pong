@@ -32,6 +32,7 @@ export default class LocalServer {
         app.use( express.static( 'public' ) )
         app.use( '/node_modules', express.static( './node_modules' ) )
         app.use( '/src', express.static( './src' ) )
+        app.use( '/out', express.static( './out' ) )
 
         // app.get( '/', ( req, res ) => {
         //     res.sendFile( path.resolve('./public/index.html') )
@@ -53,7 +54,7 @@ export default class LocalServer {
 
             socket.on( 'led', ( msg ) => {
 
-                console.log( '[io.led]:', msg );
+                // console.log( '[io.led]:', msg );
                 io.emit( 'led', msg )
     
             } )
@@ -79,7 +80,9 @@ export default class LocalServer {
 
         bs.init( {
             // watch: true,
-            files: [ 'public/*' ],
+            files: [ 
+                // 'public/*', 
+                'out/*' ],
             // server: 'public'
             // server: {
             //     baseDir: 'public'

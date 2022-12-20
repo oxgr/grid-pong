@@ -6,7 +6,10 @@
   "type": "module",
   "scripts": {
     "start": "node src/index.js",
-    "watch": "nodemon --watch src -e js --exec \"npm start\"",
+    "watchBack": "nodemon --watch src -e js --exec \"npm start\"",
+    "watchFront": "nodemon --watch public -e js --exec \"npm run build\"",
+    "watch": "npm run watchBack & npm run watchFront",
+    "build": "npx esbuild ./public/main.js --bundle --outfile=out/out.js --format=esm --sourcemap",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Faadhi Fauzi",
