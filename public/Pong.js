@@ -1,6 +1,3 @@
-// Reference for types / autocomplete
-// /* /// <reference path="../node_modules/@types/p5/global.d.ts" /> */
-
 import * as Socket from 'socket.io'
 import { GridKey } from 'Controller'
 
@@ -11,7 +8,7 @@ import Ball from './Ball.js'
 import Wall from './Wall.js'
 // import p5 from 'p5'
 
-class PongModel extends Model {
+class SketchModel extends Model {
 
     port
     url
@@ -24,40 +21,39 @@ class PongModel extends Model {
 
     global
 
+    /**
+     * 0: stop
+     * 1: play
+     */
+    state
+
+    blur
+
 }
 
-export default class Pong {
+function run( p ) {
 
-    static model = new PongModel()
-
-    static run = run
-
-}
-
-export function run( p ) {
-
-    const model = Pong.model
+    const model = Sketch.model
 
     p.setup = () => {
 
-        model.port = 3000
-        model.url = `http://localhost:${model.port}`
-        model.socket = Socket.io( model.url )
-        setupSocketHandlers( model.socket )
-
-        // console.log( window );
-
         const halfWidth = window.innerWidth * 0.5
-
         p.createCanvas( halfWidth, halfWidth )
         p.background( 'pink' )
         p.drawingContext.willReadFrequently = true
 
         console.log( p );
 
+        model.port = 3000
+        model.url = `http://localhost:${model.port}`
+        model.socket = Socket.io( model.url )
+        setupSocketHandlers( model.socket )
+
         model.global = {
-            trails: 100
+            trails: 100,
         }
+
+        model.state = 1
 
         model.walls = {
             top: new Wall( p, 'top' ),
@@ -75,49 +71,15 @@ export function run( p ) {
 
         model.led = new GridLed( p )
 
-        // console.log( p );
+        model.circleSize = 10
+        model.resetDuration = 5000
 
-        model.params = {}
+        model.blur = {
+            enable: false,
+            value: 1
+        }
 
-        model.addParam( {
-            source: 'ball.speed',
-            min: 0,
-            max: 10,
-            step: 0.1,
-        })
-
-        model.addParam( {
-            source: 'global.trails',
-            min: 0,
-            max: 255,
-            step: 1,
-        })
-        
-        // model.params = {
-        //     ball: {
-        //         speed: {
-        //             value: model.ball.speed,
-        //             opts: {
-        //                 min: 0,
-        //                 max: 10,
-        //                 step: 0.1,
-        //                 source: 'ball.speed',
-        //             }
-        //         },
-        //     },
-        //     global: {
-        //         trails: {
-        //             value: model.global.trails,
-        //             opts: {
-        //                 min: 0,
-        //                 max: 255,
-        //                 step: 1,
-        //                 source: 'global.trails',
-        //             }
-        //         },
-                
-        //     },
-        // }
+        /*********** */
 
         model.update = ( event ) => {
 
@@ -127,47 +89,101 @@ export function run( p ) {
 
         }
 
+        model.addParam( {
+            source: 'ball.speed',
+            min: 0,
+            max: 10,
+            step: 0.1,
+        })
+
+        model.addParam( {
+            source: 'ball.chaos',
+            min: 0,
+            max: 5,
+            step: 0.1,
+        })
+
+        model.addParam( {
+            source: 'global.trails',
+            min: 0,
+            max: 255,
+            step: 1,
+        })
+
+        model.addParam( {
+            source: 'blur.enable',
+        })
+
+        model.addParam( {
+            source: 'blur.value',
+            min: 0,
+            max: 4,
+            step: 0.1,
+        })
+
+        
+
     }
 
     p.draw = () => {
 
-        // p.fill( 'black' )
-        p.fill( 0, 0, 0, model.global.trails )
-        p.noStroke()
-        p.rect( 0, 0, p.width, p.height )
+        drawBackground( p )
 
         model.boards.left.draw()
         model.boards.right.draw()
 
-        const collidedWall =
-            Object.values( model.boards )
-                .find( board => board.collidedWith( model.ball ) ) ??
-            Object.values( model.walls )
-                .find( wall => wall.collidedWith( model.ball ) )
+        switch ( model.state ) {
 
-        if ( collidedWall ) {
-            // console.log( 'Collided with', collidedWall.side, collidedWall.constructor?.name )
+            case 0:
+                p.fill( 150)
+                p.stroke( 'white' )
+                p.strokeWeight( 25 )
 
+                const 
+                    sizeLo = 20,
+                    sizeHi = 200,
+                    rate = 2
 
-            if ( ( collidedWall.side === 'left' ||
-                collidedWall.side === 'right' ) &&
-                !( collidedWall instanceof Board ) ) {
+                // model.circleSize = model.circleSize < sizeHi ? model.circleSize + rate : sizeLo
+                // model.circleSize += rate
+                
+                p.circle( 
+                    model.ball.pos.x,
+                    model.ball.pos.y,
+                    // p.width * 0.5, 
+                    // p.height * 0.5, 
+                    model.circleSize)
+
+                model.circleSize += rate
+
+                if ( model.circleSize > sizeHi ) {
+                    model.state = 1
+                }
+                
+                break
+
+            case 1:
+
+                // TODO: Add countdown
+                model.state = 2
+
                 model.ball.reset()
-            } else {
+                break
 
-                model.ball.bounce( collidedWall )
-            }
+            case 2:
+                model.ball.move()
+                model.ball.draw()
 
+                const collidedWall = checkCollision()
 
+                if ( collidedWall ) model.state = collisionHandler( collidedWall )
+
+                if ( model.state === 0 ) model.circleSize = 20
+                break
         }
 
-        model.ball.move()
-        model.ball.draw()
-
-        if ( p.frameCount % 6 === 0 ) {
-            const led = sampleSketchToLed( p ).plainArray()
-            model.socket.emit( 'led', led )
-        }
+        const led = sampleSketchToLed( p ).plainArray()
+        model.socket.emit( 'led', led )
 
     }
 
@@ -247,6 +263,15 @@ export function run( p ) {
         // console.log( event )
     }
 
+    function drawBackground() {
+
+        // p.fill( 'black' )
+        p.fill( 0, 0, 0, model.global.trails )
+        p.noStroke()
+        p.rect( 0, 0, p.width, p.height )        
+
+    }
+
     function emitKey( pos, s ) {
         model.socket.emit(
             'key',
@@ -269,6 +294,34 @@ export function run( p ) {
         // } )
     }
 
+    function checkCollision() {
+
+        return Object.values( model.boards )
+            .find( board => board.collidedWith( model.ball ) ) ??
+        Object.values( model.walls )
+            .find( wall => wall.collidedWith( model.ball ) )
+
+    }
+
+    function collisionHandler( collidedWall ) {
+        
+        // console.log( 'Collided with', collidedWall.side, collidedWall.constructor?.name )
+
+        if ( ( collidedWall.side === 'left' ||
+            collidedWall.side === 'right' ) &&
+            !( collidedWall instanceof Board ) ) {
+
+            return 0        
+
+        } else {
+
+            model.ball.bounce( collidedWall )
+
+        }
+
+        return model.state
+    }
+
     function randomLed() {
         return new GridLed( p ).randomise().plainArray()
     }
@@ -282,7 +335,7 @@ export function run( p ) {
         const c = p.get( 0, 0, p.width, p.height )
         const res = 8
         const density = res / GridLed.ROWS
-        // c.filter( 'blur', 1 )
+        if( model.blur.enable ) c.filter( 'blur', model.blur.value )
         c.resize( res, res )
         // c.resize( p.width, p.height )
         // p.image( c, 0, 0 )
@@ -313,6 +366,19 @@ export function run( p ) {
         return model.led
 
     }
+
+}
+
+export default class Sketch {
+
+    /**
+     * Properties are static because they need to be:
+     * - editable from inside scoped p5 function i.e. run()
+     * - accessible from outside the scope in main by Gui
+     * */
+    static model = new SketchModel()
+
+    static run = run
 
 }
 

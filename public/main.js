@@ -11,15 +11,18 @@ async function sleep( ms = 1000 ) {
 
 async function main() {
 
-    // const pong = new Pong()
-
-    // sconst pong = 
     const mainView = new p5( Pong.run, document.getElementById( 'sketch' ) )
     const gridView = new p5( GridView, document.getElementById( 'view' ) )
 
-    console.log( Pong.model )
+    // for ( const [key,val] of Object.entries( mainView ) ) {
+    //     // if ( val instanceof Function && val.toString().includes( 'SketchModel' )) console.log( val.toString() )
+    //     console.log( val )
+    // }
+    console.log( mainView._start )
+
+    // Wait a minute while p5 setup() instantiates model variables
     await sleep(100)
-    console.log( Pong.model )
+    // console.log( Pong.model )
 
     const gui = new Gui( {
         'Pong': {
