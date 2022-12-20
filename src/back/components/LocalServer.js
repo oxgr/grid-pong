@@ -29,10 +29,10 @@ export default class LocalServer {
     }
 
     static setupRoutes( app ) {
-        app.use( express.static( 'public' ) )
-        app.use( '/node_modules', express.static( './node_modules' ) )
-        app.use( '/src', express.static( './src' ) )
-        app.use( '/out', express.static( './out' ) )
+        // app.use( express.static( 'public' ) )
+        app.use( '/', express.static( './out' ) )
+        // app.use( '/node_modules', express.static( './node_modules' ) )
+        // app.use( '/src', express.static( './src' ) )
 
         // app.get( '/', ( req, res ) => {
         //     res.sendFile( path.resolve('./public/index.html') )

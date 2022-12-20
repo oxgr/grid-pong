@@ -6,8 +6,6 @@ import View from './components/View.js'
 
 export async function run() {
 
-    
-
     const server = new LocalServer()
 
     console.log( '\n------------\n')

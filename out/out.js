@@ -26293,10 +26293,12 @@ function run(p) {
         p.fill(150);
         p.stroke("white");
         p.strokeWeight(25);
-        const sizeLo = 20, sizeHi = 200, rate = 2;
-        p.circle(
+        const sizeLo = 20, sizeHi = 280, rate = 1.5;
+        p.rectMode(p.CENTER);
+        p.rect(
           model.ball.pos.x,
           model.ball.pos.y,
+          model.circleSize,
           model.circleSize
         );
         model.circleSize += rate;
@@ -26371,6 +26373,7 @@ function run(p) {
   p.mouseClicked = (event) => {
   };
   function drawBackground() {
+    p.rectMode(p.CORNER);
     p.fill(0, 0, 0, model.global.trails);
     p.noStroke();
     p.rect(0, 0, p.width, p.height);

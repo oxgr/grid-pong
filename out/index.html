@@ -10,27 +10,19 @@
             margin: 0;
         }
         .container {
-            display: flex
+            <!-- display: flex -->
         }
     </style>
 </head>
 <body>
-    <script type="importmap">
-        {
-            "imports": {
-                "p5": "/node_modules/p5/lib/p5.js",
-                "@types/p5": "/node_modules/@types/p5/index.d.ts",
-                "socket.io-client": "/node_modules/socket.io-client/dist/socket.io.esm.min.js",
-                "Controller": "/src/Controller.js",
-                "tweakpane": "/node_modules/tweakpane/dist/tweakpane.js"
-            }
-        }
-    </script>
+
     <script src="./out.js" type="module"></script>
+
     <div class="container">
         <div id="sketch"></div>
         <div id="view"></div>
         <div class="logbox"></div>
     </div>
+
 </body>
 </html>

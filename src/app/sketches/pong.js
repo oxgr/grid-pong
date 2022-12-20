@@ -141,17 +141,20 @@ function run( p ) {
 
                 const 
                     sizeLo = 20,
-                    sizeHi = 200,
-                    rate = 2
+                    sizeHi = 280,
+                    rate = 1.5
 
                 // model.circleSize = model.circleSize < sizeHi ? model.circleSize + rate : sizeLo
                 // model.circleSize += rate
+
+                p.rectMode( p.CENTER )
                 
-                p.circle( 
+                p.rect( 
                     model.ball.pos.x,
                     model.ball.pos.y,
                     // p.width * 0.5, 
                     // p.height * 0.5, 
+                    model.circleSize,
                     model.circleSize)
 
                 model.circleSize += rate
@@ -265,6 +268,7 @@ function run( p ) {
 
     function drawBackground() {
 
+        p.rectMode( p.CORNER )
         // p.fill( 'black' )
         p.fill( 0, 0, 0, model.global.trails )
         p.noStroke()
