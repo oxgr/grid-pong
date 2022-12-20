@@ -20,11 +20,60 @@ class Model {
 
     led
 
+    global
+
+    params = {}
+    update = () => {}
+
+    addParam ( opts ) {
+        // const fields = source.split( '.' )
+        const value = this.getNested( opts.source )
+        this.setNested( 'params.' + opts.source + '.value', value )
+        this.setNested( 'params.' + opts.source + '.opts', opts )
+    }
+
+    getNested( fields) {
+        fields = fields.split('.');
+
+        let cur = this,
+        last = fields.pop();
+
+        fields.forEach( (field) => cur = cur[field] );
+
+        return cur[last];
+    }
+
+    setNested( fields, val) {
+
+        fields = fields.split('.');
+
+        let cur = this,
+        last = fields.pop();
+
+        fields.forEach( (field) => {
+            cur[field] = cur[ field ] ?? {}
+            cur = cur[field]
+         } )
+
+        cur[last] = val;
+
+        // return fields.length === 0 ? obj : setNested()
+        return this;
+    }
+
 }
 
-export default function Pong( p ) {
+export default class Pong {
 
-    const model = new Model()
+    static model = new Model()
+
+    static run = run
+
+}
+
+export function run( p ) {
+
+    const model = Pong.model
 
     p.setup = () => {
 
@@ -33,12 +82,19 @@ export default function Pong( p ) {
         model.socket = Socket.io( model.url )
         setupSocketHandlers( model.socket )
 
-        console.log( window );
+        // console.log( window );
 
         const halfWidth = window.innerWidth * 0.5
 
         p.createCanvas( halfWidth, halfWidth )
         p.background( 'pink' )
+        p.drawingContext.willReadFrequently = true
+
+        console.log( p );
+
+        model.global = {
+            trails: 100
+        }
 
         model.walls = {
             top: new Wall( p, 'top' ),
@@ -52,18 +108,68 @@ export default function Pong( p ) {
             right: new Board( p, 'right' )
         }
 
-        model.ball = new Ball( p, p.width / GridLed.COLS )
+        model.ball = new Ball( p, ( p.width / GridLed.COLS ) * 1.2 )
 
         model.led = new GridLed( p )
 
-        console.log( p );
+        // console.log( p );
+
+        model.params = {}
+
+        model.addParam( {
+            source: 'ball.speed',
+            min: 0,
+            max: 10,
+            step: 0.1,
+        })
+
+        model.addParam( {
+            source: 'global.trails',
+            min: 0,
+            max: 255,
+            step: 1,
+        })
+        
+        // model.params = {
+        //     ball: {
+        //         speed: {
+        //             value: model.ball.speed,
+        //             opts: {
+        //                 min: 0,
+        //                 max: 10,
+        //                 step: 0.1,
+        //                 source: 'ball.speed',
+        //             }
+        //         },
+        //     },
+        //     global: {
+        //         trails: {
+        //             value: model.global.trails,
+        //             opts: {
+        //                 min: 0,
+        //                 max: 255,
+        //                 step: 1,
+        //                 source: 'global.trails',
+        //             }
+        //         },
+                
+        //     },
+        // }
+
+        model.update = ( event ) => {
+
+            const source = event.target.controller_.binding.target.obj_.opts.source
+
+            model.setNested( source, event.value )
+
+        }
 
     }
 
     p.draw = () => {
 
         // p.fill( 'black' )
-        p.fill( 0, 0, 0, 10 )
+        p.fill( 0, 0, 0, model.global.trails )
         p.noStroke()
         p.rect( 0, 0, p.width, p.height )
 
@@ -77,7 +183,7 @@ export default function Pong( p ) {
                 .find( wall => wall.collidedWith( model.ball ) )
 
         if ( collidedWall ) {
-            console.log( 'Collided with', collidedWall.side, collidedWall.constructor?.name )
+            // console.log( 'Collided with', collidedWall.side, collidedWall.constructor?.name )
 
 
             if ( ( collidedWall.side === 'left' ||
@@ -138,6 +244,7 @@ export default function Pong( p ) {
 
             case ' ':
                 // model.socket.emit( 'led', randomLed() )
+                console.log( model )
                 break
 
 
@@ -174,7 +281,7 @@ export default function Pong( p ) {
     }
 
     p.mouseClicked = ( event ) => {
-        console.log( event )
+        // console.log( event )
     }
 
     function emitKey( pos, s ) {
@@ -212,7 +319,7 @@ export default function Pong( p ) {
         const c = p.get( 0, 0, p.width, p.height )
         const res = 8
         const density = res / GridLed.ROWS
-        c.filter( 'blur', 0.6 )
+        // c.filter( 'blur', 1 )
         c.resize( res, res )
         // c.resize( p.width, p.height )
         // p.image( c, 0, 0 )

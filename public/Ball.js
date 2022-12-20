@@ -8,7 +8,7 @@ export default class Ball {
         // this.x = this.p.width * 0.5
         // this.y = this.p.height * 0.5
 
-        this.speed = 4
+        this.speed = 5
 
         this.chaos = 1
 
@@ -44,6 +44,8 @@ export default class Ball {
             Math.random() - 0.5,
             Math.random() - 0.5
         ).normalize()
+
+        // this.resetting = true
     }
 
     // checkCollision() {

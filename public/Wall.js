@@ -52,8 +52,10 @@ export default class Wall {
      * @param {Ball} ball 
      */
     collidedWith( ball ) {
-        this.ghost.set( ball.pos )
-        this.ghost.add( ball.d )
+        this.ghost.set( ball.dir )
+        this.ghost.mult( ball.size * 0.5 )
+        this.ghost.add( ball.pos )
+        // .mult( ball.size * 0.5, ball.size * 0.5 )
 
         if (
             ( this.side === 'top' && this.ghost.y < this.bounds.y ) ||

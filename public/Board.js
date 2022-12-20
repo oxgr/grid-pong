@@ -28,8 +28,6 @@ export default class Board extends Wall {
         if ( this.side === 'left' ) this.bounds.set( this.pos.x + this.w, this.w, 0 )
         if ( this.side === 'right' ) this.bounds.set( this.pos.x, 0 )
 
-        console.log( this );
-
     }
 
     draw() {

@@ -1,4 +1,4 @@
-import { run } from './lib.js'
+        import { run } from './lib.js'
 
 await main()
 
