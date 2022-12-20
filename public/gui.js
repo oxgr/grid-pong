@@ -33,7 +33,7 @@ export default class Gui {
                 continue
             }
 
-            const opts = { ...params[ key ].opts, label: key}
+            const opts = { ...params[ key ].opts, label: params[ key ].opts.label ?? key}
             // console.log( opts )
             container.addInput( params[ key ], 'value', opts )
 

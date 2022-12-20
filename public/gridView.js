@@ -1,7 +1,8 @@
 import GridLed from "./GridLed.js"
 import * as Socket from 'socket.io'
+import Model from "./Model.js"
 
-class Model {
+class GridModel extends Model{
 
     led
     socket
@@ -10,7 +11,7 @@ class Model {
 
 export default function GridView( p ) {
 
-    const model = new Model()
+    const model = new GridModel()
 
     p.setup = () => {
 

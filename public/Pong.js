@@ -3,13 +3,15 @@
 
 import * as Socket from 'socket.io'
 import { GridKey } from 'Controller'
+
+import Model from './Model.js'
 import Board from './Board.js'
 import GridLed from './GridLed.js'
 import Ball from './Ball.js'
 import Wall from './Wall.js'
 // import p5 from 'p5'
 
-class Model {
+class PongModel extends Model {
 
     port
     url
@@ -22,50 +24,11 @@ class Model {
 
     global
 
-    params = {}
-    update = () => {}
-
-    addParam ( opts ) {
-        // const fields = source.split( '.' )
-        const value = this.getNested( opts.source )
-        this.setNested( 'params.' + opts.source + '.value', value )
-        this.setNested( 'params.' + opts.source + '.opts', opts )
-    }
-
-    getNested( fields) {
-        fields = fields.split('.');
-
-        let cur = this,
-        last = fields.pop();
-
-        fields.forEach( (field) => cur = cur[field] );
-
-        return cur[last];
-    }
-
-    setNested( fields, val) {
-
-        fields = fields.split('.');
-
-        let cur = this,
-        last = fields.pop();
-
-        fields.forEach( (field) => {
-            cur[field] = cur[ field ] ?? {}
-            cur = cur[field]
-         } )
-
-        cur[last] = val;
-
-        // return fields.length === 0 ? obj : setNested()
-        return this;
-    }
-
 }
 
 export default class Pong {
 
-    static model = new Model()
+    static model = new PongModel()
 
     static run = run
 
