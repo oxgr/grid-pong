@@ -1,8 +1,8 @@
 // @ts-check
-import LocalServer from './LocalServer.js'
+import LocalServer from './components/LocalServer.js'
 import monomeGrid from 'monome-grid'
-import Controller from './Controller.js'
-import View from './View.js'
+import Controller from './components/Controller.js'
+import View from './components/View.js'
 
 export async function run() {
 

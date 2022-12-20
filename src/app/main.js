@@ -1,7 +1,7 @@
 import p5 from 'p5'
-import Pong from './pong.js'
-import GridView from './gridView.js'
-import Gui from './gui.js'
+import Pong from './sketches/pong.js'
+import GridView from './sketches/gridView.js'
+import Gui from './components/Gui.js'
 
 await main()
 

@@ -23727,7 +23727,7 @@ var require_tweakpane = __commonJS({
   }
 });
 
-// public/main.js
+// src/app/main.js
 var import_p5 = __toESM(require_p5_min(), 1);
 
 // node_modules/engine.io-parser/build/esm/commons.js
@@ -25954,7 +25954,7 @@ Object.assign(lookup2, {
   connect: lookup2
 });
 
-// public/GridKey.js
+// src/app/components/GridKey.js
 var GridKey = class {
   constructor(x, y, s) {
     this.x = x;
@@ -25967,7 +25967,7 @@ __publicField(GridKey, "BTM_LEFT", { x: 0, y: 7 });
 __publicField(GridKey, "TOP_RIGHT", { x: 7, y: 0 });
 __publicField(GridKey, "BTM_RIGHT", { x: 7, y: 7 });
 
-// public/Model.js
+// src/app/components/Model.js
 var Model = class {
   params = {};
   update = () => {
@@ -25994,7 +25994,7 @@ var Model = class {
   }
 };
 
-// public/GridButton.js
+// src/app/components/GridButton.js
 var _GridButton = class {
   brightness;
   constructor(p, row, col, size) {
@@ -26023,7 +26023,7 @@ var GridButton = _GridButton;
 __publicField(GridButton, "MIN_BRI", 0);
 __publicField(GridButton, "MAX_BRI", 15);
 
-// public/GridLed.js
+// src/app/components/GridLed.js
 var _GridLed = class {
   constructor(p) {
     this.p = p;
@@ -26084,7 +26084,7 @@ var GridLed = _GridLed;
 __publicField(GridLed, "ROWS", 8);
 __publicField(GridLed, "COLS", 8);
 
-// public/Ball.js
+// src/app/components/Ball.js
 var Ball = class {
   constructor(p, size = 30) {
     this.p = p;
@@ -26121,7 +26121,7 @@ var Ball = class {
   }
 };
 
-// public/Wall.js
+// src/app/components/Wall.js
 var Wall = class {
   constructor(p, side) {
     this.p = p;
@@ -26168,7 +26168,7 @@ var Wall = class {
   }
 };
 
-// public/Board.js
+// src/app/components/Board.js
 var Board = class extends Wall {
   constructor(p, side) {
     super(p, side);
@@ -26206,7 +26206,7 @@ var Board = class extends Wall {
   }
 };
 
-// public/pong.js
+// src/app/sketches/pong.js
 var SketchModel = class extends Model {
   port;
   url;
@@ -26437,7 +26437,7 @@ var Sketch = class {
 __publicField(Sketch, "model", new SketchModel());
 __publicField(Sketch, "run", run);
 
-// public/gridView.js
+// src/app/sketches/gridView.js
 var GridModel = class extends Model {
   led;
   socket;
@@ -26464,7 +26464,7 @@ function GridView(p) {
   }
 }
 
-// public/gui.js
+// src/app/components/Gui.js
 var import_tweakpane = __toESM(require_tweakpane(), 1);
 var Gui = class {
   constructor(paramsObj) {
@@ -26491,7 +26491,7 @@ var Gui = class {
   }
 };
 
-// public/main.js
+// src/app/main.js
 await main();
 async function main() {
   const mainView = new import_p5.default(Sketch.run, document.getElementById("sketch"));

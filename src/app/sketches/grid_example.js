@@ -2,9 +2,9 @@ import * as Socket from 'socket.io-client'
 import { GridKey } from './GridKey.js'
 
 import Model from './Model.js'
-import Board from './Board.js'
+import Board from '../components/Board.js'
 import GridLed from './GridLed.js'
-import Ball from './Ball.js'
+import Ball from '../components/Ball.js'
 import Wall from './Wall.js'
 // import p5 from 'p5'
 

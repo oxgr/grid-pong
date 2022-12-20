@@ -1,11 +1,11 @@
 import * as Socket from 'socket.io-client'
 
-import { GridKey } from './GridKey.js'
-import Model from './Model.js'
-import Board from './Board.js'
-import GridLed from './GridLed.js'
-import Ball from './Ball.js'
-import Wall from './Wall.js'
+import { GridKey } from '../components/GridKey.js'
+import Model from '../components/Model.js'
+import Board from '../components/Board.js'
+import GridLed from '../components/GridLed.js'
+import Ball from '../components/Ball.js'
+import Wall from '../components/Wall.js'
 // import p5 from 'p5'
 
 class SketchModel extends Model {

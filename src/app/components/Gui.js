@@ -14,7 +14,7 @@ export default class Gui {
                 title: name
             } )
             folder.on( 'change', obj.update )
-            this.addRecursive( folder, obj.params )  
+            this.addRecursive( folder, obj.params ) 
         }
  
     }
